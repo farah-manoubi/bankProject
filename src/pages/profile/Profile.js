@@ -36,9 +36,24 @@ export const Profile = () =>{
         })
     }
 
-    const saveEdit = (e) =>{
+    const saveEdit = async (e) =>{
         e.preventDefault()
-        dispatch(userConnected({...user, firstName: userData.firstName, lastName: userData.lastName}))
+        const resp = await fetch (
+            "http://localhost:3001/api/v1/user/profile",
+            {
+                method: "PUT",
+                body: JSON.stringify({
+                    firstName: userData.firstName,
+                    lastName: userData.lastName
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer" + user.token
+                }
+            }
+        )
+        const data = await resp.json()
+        dispatch(userConnected({...user, firstName: data.body.firstName, lastName: data.body.lastName}))
         setIsEditing(false)
     }
 

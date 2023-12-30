@@ -1,15 +1,33 @@
 import style from "./formulaire.module.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import {saveToken , userConnected} from "../../redux/userSlice"
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {saveToken , userConnected, userRemember} from "../../redux/userSlice"
 import { useNavigate } from "react-router-dom";
 
 export const Formulaire = () =>{
     const [userData, setUserData] = useState({email:"", password:""})
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [rememberMe, setRememberMe] = useState(false);
+
+    const token = useSelector((state) => state.user.token)
+   
+
+    useEffect(() =>{
+        if(rememberMe){
+            if(token){
+                const tokenStor =  localStorage.getItem("token")
+                const email =  localStorage.getItem("email")
+                const password = localStorage.getItem("password")
+                dispatch(userRemember({tokenStor, email, password}))
+            }
+            
+          }
+    })
+
+   
 
     const logIn = async (e) =>{
         e.preventDefault()
@@ -28,8 +46,9 @@ export const Formulaire = () =>{
         )
         const data = await response.json()
 
+        
+
         if(data && data.status === 200){
-            
             const resp = await fetch (
                 "http://localhost:3001/api/v1/user/profile",
                 {
@@ -48,6 +67,7 @@ export const Formulaire = () =>{
         }
         
     }
+   
     
     const changeData = (e) =>{
         setUserData({
@@ -56,6 +76,13 @@ export const Formulaire = () =>{
         })
     }
 
+  
+
+    const clickCheckBox = (e) =>{
+        setRememberMe(!rememberMe)
+    }
+
+    
     return(
         <>
             <section className={style.signInContent}>
@@ -71,7 +98,7 @@ export const Formulaire = () =>{
                         <input type="password" id="password" value={userData.password} onChange={changeData} />
                     </div>
                     <div className={style.inputRemember}>
-                        <input type="checkbox" id="remember-me" />
+                        <input type="checkbox" id="remember-me" checked={rememberMe} onChange={clickCheckBox} />
                         <label htmlFor="remember-me">Remember me</label>
                     </div>
                 <button className={style.signInButton} type="submit">Sign In</button>
