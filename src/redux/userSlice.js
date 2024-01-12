@@ -23,6 +23,7 @@ export const userSlice = createSlice({
             state.firstName = null
             state.lastName = null
             state.token = null
+            localStorage.clear()
         },
         userRemember: (state, action) =>{
            

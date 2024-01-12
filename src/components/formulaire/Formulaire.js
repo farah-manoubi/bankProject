@@ -12,23 +12,7 @@ export const Formulaire = () =>{
     const navigate = useNavigate();
     const [rememberMe, setRememberMe] = useState(false);
 
-    const token = useSelector((state) => state.user.token)
    
-
-    useEffect(() =>{
-        if(rememberMe){
-            if(token){
-                const tokenStor =  localStorage.getItem("token")
-                const email =  localStorage.getItem("email")
-                const password = localStorage.getItem("password")
-                dispatch(userRemember({tokenStor, email, password}))
-            }
-            
-          }
-    })
-
-   
-
     const logIn = async (e) =>{
         e.preventDefault()
         const response = await fetch (
@@ -63,6 +47,11 @@ export const Formulaire = () =>{
             const dataUser = await resp.json()
             dispatch(saveToken(data.body.token))
             dispatch(userConnected({firstName: dataUser.body.firstName, lastName: dataUser.body.lastName}))
+
+            if(rememberMe){
+                localStorage.setItem('token', data.body.token)
+            }
+
             navigate("/profile")
         }
         
