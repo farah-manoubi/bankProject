@@ -3,9 +3,7 @@ const { createSlice } = require("@reduxjs/toolkit");
 const initialState = {
     firstName: null,
     lastName: null,
-    token: null,
-    email: null,
-    password: null,
+    token: null
 }
 
 export const userSlice = createSlice({
@@ -24,16 +22,9 @@ export const userSlice = createSlice({
             state.lastName = null
             state.token = null
             localStorage.clear()
-        },
-        userRemember: (state, action) =>{
-           
-            state.email = action.payload.email
-            state.password = action.payload.password
-
         }
-        
     }
 })
 
-export const {userConnected, saveToken, userSignOut, userRemember} = userSlice.actions;
+export const {userConnected, saveToken, userSignOut} = userSlice.actions;
 export default userSlice.reducer;
